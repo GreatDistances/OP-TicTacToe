@@ -1,0 +1,17 @@
+.gameBoard {
+    display: grid;
+    grid-template-columns: 100px 100px 100px;
+    grid-template-rows: 100px 100px 100px;
+    gap: 4px;
+}
+
+.gameBoard li {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: lightblue;
+    font-size: 5em;
+    width: 100px;
+    height: 100px;
+}
