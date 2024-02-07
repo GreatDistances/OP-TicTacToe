@@ -4,14 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <div id="title">Tic Tac Toe</div>
-    <div id="controls">
-        <button id="resetBoardBtn">Reset Board</button>
-        <button id="resetScoresBtn">Reset Scores</button>
+    <div id="header">
+        <h1 id="title">Tic Tac Toe</h1>
+        <div id="controls">
+            <button id="resetBoardBtn">Reset Board</button>
+            <button id="resetScoresBtn">Reset Scores</button>
+            <button id="resetMatchBtn">Reset Match</button>
     </div>
+    </div>
+    <div class="gameBoardContainer">
     <ul class="gameBoard">
         <li id="cell1"></li>
         <li id="cell2"></li>
@@ -23,9 +30,20 @@
         <li id="cell8"></li>
         <li id="cell9"></li>
     </ul>
-    <div id="messageTurn"></div>
-    <div id="messageScores"></div>
-    <div id="messageAlerts"></div>
+</div>
+    <div id="messageHeaders">
+        <div id="messageTurnHeader">TURN</div>
+        <div id="messageScoresHeader">SCORES</div>
+        <div id="messageAlertsHeader">ALERTS</div>
+    </div>
+    <div id="messageContainer">
+        <div id="messageTurn"></div>
+        <div id="messageScores"></div>
+        <div id="messageAlerts"></div>
+    </div>
+    <div id="footer">
+        <a href="https://github.com/GreatDistances">© 2024, Matthew P. Wicks</a>
+    </div>
 </body>
 <script src="scripts.js"></script>
 </html>

@@ -10,19 +10,36 @@ const cell9 = document.getElementById("cell9");
 
 const resetBoardBtn = document.getElementById("resetBoardBtn");
 const resetScoresBtn = document.getElementById("resetScoresBtn");
+const resetMatchBtn = document.getElementById("resetMatchBtn");
 const messageScores = document.getElementById("messageScores");
 const messageAlerts = document.getElementById("messageAlerts");
 const messageTurn = document.getElementById("messageTurn")
 
 resetBoardBtn.addEventListener("click", (e) => {
-    game.resetGame();
+    game.resetBoard();
     messageAlerts.innerText = "Game board reset."
+    resetBoardBtn.style.backgroundColor = "";
+    messageTurn.style.fontSize = "4em";
 });
 
 resetScoresBtn.addEventListener("click", (e) => {
     game.resetScores();
     console.log(`Player scores reset.`)
     messageAlerts.innerText = "Player scores reset."
+});
+
+resetMatchBtn.addEventListener("click", (e) => {
+    game.resetScores();
+    game.resetBoard();
+    resetMatchBtn.style.backgroundColor = "";
+    resetBoardBtn.style.backgroundColor = "";
+    messageTurn.style.backgroundColor = "";
+    messageScores.style.backgroundColor = "";
+    messageAlerts.style.backgroundColor = "";
+    messageTurn.style.fontSize = "4em";
+    resetBoardBtn.disabled = false;
+    resetScoresBtn.disabled = false;
+    messageAlerts.innerText = "Board & scores reset.";
 });
 
 
@@ -91,13 +108,14 @@ function createGameController() {
 
   const createPlayerOrder = () => {
     let randomPlayer = Math.floor(Math.random() * 2 + 1); // random player starts match
-    console.log(`Player ${randomPlayer} starts round`);
+    console.log(`Player ${randomPlayer}\nstarts round`);
     return randomPlayer;
   };
 
   let activePlayer = createPlayerOrder();
   console.log(`Player ${activePlayer}, "${players[activePlayer].marker}" now active`);
-  messageTurn.innerText = `Player ${activePlayer}, "${players[activePlayer].marker}", starts the round`;
+  messageTurn.innerText = `${players[activePlayer].marker}`;
+  messageTurn.style.fontSize = "4em";
 
   const switchActivePlayer = () => {
     if (activePlayer === 1) {
@@ -105,8 +123,9 @@ function createGameController() {
     } else {
       activePlayer = 1;
     }
-    console.log(`Player ${activePlayer}, "${players[activePlayer].marker}" now active`);
-    messageTurn.innerText = `Player ${activePlayer}, "${players[activePlayer].marker}", now active`;
+    console.log(`Player ${activePlayer}, "${players[activePlayer].marker}"'s turn`);
+    messageTurn.innerText = `${players[activePlayer].marker}`;
+    messageTurn.style.fontSize = "4em";
   };
 
   const checkRoundWinCondition = (m) => {
@@ -145,6 +164,7 @@ function createGameController() {
     if (board[row][col] !== "_") {
       console.log("Try a different game board cell, that one is full!");
       messageAlerts.innerText = "Try a different game board cell, that one is full!";
+      messageAlerts.style.backgroundColor = "pink";
       return true;
     }
     return false;
@@ -159,7 +179,9 @@ function createGameController() {
       }
     }
     console.log(`Board full, cat's game.`);
-    messageTurn.innerText = `Board full, cat's game.`
+    messageTurn.innerText = `Board full,\ncat's game.`
+    messageTurn.style.fontSize = "1em";
+    resetBoardBtn.style.backgroundColor = "violet";
     gameLocked = true;
     displayScore();
     return true;
@@ -170,8 +192,13 @@ function createGameController() {
       console.log(
         `Player ${activePlayer}, "${players[activePlayer].marker}" WINS THE MATCH`
       );
-      messageAlerts.innerText = `Player ${activePlayer}, "${players[activePlayer].marker}" WINS THE MATCH`;
-      messageTurn.innerText = "";
+      messageTurn.style.fontSize = "1em";
+      messageTurn.style.backgroundColor = "lightGreen";
+      messageScores.style.backgroundColor = "lightGoldenrodYellow";
+      messageAlerts.style.backgroundColor = "pink";
+      messageAlerts.innerText = `Player ${activePlayer}, "${players[activePlayer].marker}"\nWINS THE MATCH`;
+      messageTurn.innerText = `Player ${activePlayer}, "${players[activePlayer].marker}"\nWINS THE MATCH`;
+      resetBoardBtn.style.backgroundColor = "violet";
       return true;
     }
     return false;
@@ -182,16 +209,18 @@ function createGameController() {
     console.log(
       `Player ${activePlayer}, "${players[activePlayer].marker}" wins this round`
     );
-    messageTurn.innerText = `Player ${activePlayer}, "${players[activePlayer].marker}" wins this round`
+    messageTurn.style.fontSize = "1em";
+    messageTurn.innerText = `Player ${activePlayer}, "${players[activePlayer].marker}"\nwins this round`
+    resetBoardBtn.style.backgroundColor = "violet";
     displayScore();
 
   };
 
-  const resetGame = () => {
+  const resetBoard = () => {
     gameLocked = false;
     board = createBoard();
     activePlayer = createPlayerOrder();
-    messageTurn.innerText = `Player ${activePlayer}, "${players[activePlayer].marker}" starts the round`;
+    messageTurn.innerText = `${players[activePlayer].marker}`;
   };
 
   const resetScores = () => {
@@ -200,20 +229,15 @@ function createGameController() {
     displayScore();
   }
 
-  const resetMatch = () => {
-    resetGame();
-    resetScores();
-  };
-
   const displayBoard = () => {
     console.log(board.map((row) => row.join(" ")).join("\n"));
   };
 
   const displayScore = () => {
     console.log(
-        `Player 1 score: ${players[1].score}, Player 2 score: ${players[2].score}`
+        `Player 1: ${players[1].score}, Player 2: ${players[2].score}`
       );
-      messageScores.innerText = `Player 1, "${players[1].marker}" score: ${players[1].score}, Player 2, "${players[2].marker}" score: ${players[2].score}`;
+      messageScores.innerText = `Player 1, "${players[1].marker}": ${players[1].score}\nPlayer 2, "${players[2].marker}": ${players[2].score}`;
   }
 
   const makeMove = (row, col, cell) => {
@@ -225,15 +249,19 @@ function createGameController() {
       return;
     }
     if (row <= 2 && col <= 2 && board[row][col] === "_") {
+        messageAlerts.style.backgroundColor = "";
       board[row][col] = players[activePlayer].marker;
       cell.innerText = players[activePlayer].marker;
       displayBoard();
       if (checkRoundWinCondition(players[activePlayer].marker) === true) {
         scoreGame();
-        let gameOver = checkMatchWinCondition();
-        if (gameOver) {
-          resetMatch();
+        let matchOver = checkMatchWinCondition();
+        if (matchOver) {
           gameLocked = true;
+          resetMatchBtn.style.backgroundColor = "violet";
+          resetBoardBtn.style.backgroundColor = "";
+          resetBoardBtn.disabled = true;
+          resetScoresBtn.disabled = true;
           return;
         } else {
           gameLocked = true;
@@ -250,7 +278,7 @@ function createGameController() {
   };
 
   return {
-    makeMove: makeMove, resetGame: resetGame, resetScores: resetScores, gameLocked: gameLocked,
+    makeMove: makeMove, resetBoard: resetBoard, resetScores: resetScores, gameLocked: gameLocked,
   };
 }
 
